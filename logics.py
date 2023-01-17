@@ -7,6 +7,7 @@ class Logics:
         self.paid_off: int
         self.sick: int
         self.datas = []
+        self.workdays = []
         
     def convert_to_decimal(self, time: str):
         time = time.split(':')
@@ -22,13 +23,18 @@ class Logics:
             if worked_hours > 4.5 and worked_hours <= 6: return 0.5
             if worked_hours > 6 and worked_hours <= 8.75: return 0.75
             
-    def counting_hours(self, clk_in: float, clk_out: float, is_double_money: bool):
+    def counting_hours(self, clk_in: float, clk_out: float, is_double_money: bool, date: str):
         
         data = Data()
+        data.day = date
+        self.workdays.append(date)
         if clk_in < clk_out:
             hours = clk_out - clk_in
             double_money = 1
             
+            if clk_out == 0.0:
+                clk_out = 24
+                print(clk_out)
             if is_double_money:
                 double_money = 2
                 data.hundred_percent += hours - self.break_time(hours)
@@ -36,7 +42,7 @@ class Logics:
             if clk_in > 0 and clk_out <= 6:
                 data.fourty_percent += hours * double_money
     
-            elif clk_in > 22 and (clk_out <= 24 or clk_out == 0):
+            elif clk_in > 22 and clk_out <= 24:
                 data.fourty_percent += hours * double_money
                 
             elif clk_in > 18 and clk_out <= 22:
@@ -48,7 +54,7 @@ class Logics:
             elif clk_in > 6 and clk_out <= 22 and clk_out > 18:
                 data.thirty_percent += (clk_out - 18) * double_money
             
-            elif clk_in > 18 and (clk_out <= 24 or clk_out == 0) and clk_out > 22:
+            elif clk_in > 18 and clk_out <= 24 and clk_out > 22:
                 data.fourty_percent += (6 - clk_in) * double_money
                 data.thirty_percent += (clk_out - 18) * double_money
             
@@ -56,7 +62,7 @@ class Logics:
                 data.fourty_percent += (6 - clk_in) * double_money
                 data.thirty_percent += (clk_out - 18) * double_money
             
-            elif clk_in > 6 and clk_in <= 18 and (clk_out <= 24 or clk_out == 0) and clk_out > 22:
+            elif clk_in > 6 and clk_in <= 18 and clk_out <= 24 and clk_out > 22:
                 data.fourty_percent += (clk_out - 22) * double_money
                 data.thirty_percent += 4 * double_money
                 
@@ -85,4 +91,14 @@ class Logics:
             tax = self.brutto_money * 0.15
         tb = self.brutto_money * 0.185
         nett_money = self.brutto_money - tax
-        return nett_money
+        return nett_money, self.brutto_money, tax
+    
+l = Logics()
+l.age = 23
+l.wage = 1000
+l.sick = 0
+l.paid_off = 0
+l.counting_hours(14, 24, False)
+l.counting_hours(14, 15, False)
+print(l.datas[0].thirty_percent, l.datas[1].thirty_percent)
+print(l.counting_money())
