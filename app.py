@@ -111,7 +111,8 @@ class SalaryCounter(Tk):
         Label(top, text=f"40%").grid(row=0, column=3, sticky='W', padx=15)
         Label(top, text=f"100%").grid(row=0, column=4, sticky='W', padx=15)
         
-        #hi
+        #hi from github
+        
         for index, solution in enumerate(self.solutions):
             print(solution)
             Label(top, text=f"{solution[0][index]}").grid(row=index + 1, column=0, sticky='W', padx=30)
