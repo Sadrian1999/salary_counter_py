@@ -82,23 +82,23 @@ class SalaryCounter(Tk):
         ]
         
         self.date.set(self.calendar.get_date()) 
-        if self.date.get() in holdiay_2023:
-            double_money = True
-        else:
-            double_money = False
-        if self.date.get() in self.logics.date:
-            Label(self, text="A megadott dátum már szerepel a")
-        else:
-            print("apad")
-            self.logics.date.append(self.date.get())
         self.calendar.config(selectforeground="green")
         self.logics.age = int(self.age.get())
         self.logics.paid_off = int(self.paid.get())
         self.logics.sick = int(self.sick.get())
         self.logics.wage = int(self.wage.get())
-        self.solutions.append([self.logics.date, self.logics.base_hours, self.logics.thirty_percent, self.logics.fourty_percent, self.logics.hundred_percent])
-        self.logics.counting_hours(self.logics.convert_to_decimal(self.clk_in.get()), self.logics.convert_to_decimal(self.clk_out.get()), double_money)
-        self.salary += self.logics.counting_money()
+        
+        error_msg = Label(self, text="A megadott dátumra már adtál meg műszakot!")
+        
+        if self.date.get() in holdiay_2023:
+            double_money = True
+        else:
+            double_money = False
+        if self.date.get() in self.logics.workdays:
+            error_msg.grid(column=1, row=6, pady=10)
+        else:
+            error_msg.config(text="")
+            self.logics.counting_hours(self.logics.convert_to_decimal(self.clk_in.get()), self.logics.convert_to_decimal(self.clk_out.get()), double_money,self.date.get())
     
     def show_data(self):
         top = Toplevel()
@@ -111,31 +111,30 @@ class SalaryCounter(Tk):
         Label(top, text=f"40%").grid(row=0, column=3, sticky='W', padx=15)
         Label(top, text=f"100%").grid(row=0, column=4, sticky='W', padx=15)
         
-        for index, solution in enumerate(self.solutions):
-            print(solution)
-            Label(top, text=f"{solution[0][index]}").grid(row=index + 1, column=0, sticky='W', padx=30)
-            Label(top, text=f"{solution[1][index]:.2f}").grid(row=index + 1, column=1, sticky='W', padx=15)
-            Label(top, text=f"{solution[2][index]:.2f}").grid(row=index + 1, column=2, sticky='W', padx=15)
-            Label(top, text=f"{solution[3][index]:.2f}").grid(row=index + 1, column=3, sticky='W', padx=15)
-            Label(top, text=f"{solution[4][index]:.2f}").grid(row=index + 1, column=4, sticky='W', padx=15)
+        for index,data in enumerate(self.logics.datas):
+            Label(top, text=f"{data.day}").grid(row=index + 1, column=0, sticky='W', padx=30)
+            Label(top, text=f"{data.base_hours:.2f}").grid(row=index + 1, column=1, sticky='W', padx=15)
+            Label(top, text=f"{data.thirty_percent:.2f}").grid(row=index + 1, column=2, sticky='W', padx=15)
+            Label(top, text=f"{data.fourty_percent:.2f}").grid(row=index + 1, column=3, sticky='W', padx=15)
+            Label(top, text=f"{data.hundred_percent:.2f}").grid(row=index + 1, column=4, sticky='W', padx=15)
             
         Label(top, text=f"Total").grid(row=index + 2, column=0, sticky='W', padx=30)
-        Label(top, text=f"{sum(self.logics.base_hours):.2f}").grid(row=index + 2, column=1, sticky='W', padx=15)
-        Label(top, text=f"{sum(self.logics.thirty_percent):.2f}").grid(row=index + 2, column=2, sticky='W', padx=15)
-        Label(top, text=f"{sum(self.logics.fourty_percent):.2f}").grid(row=index + 2, column=3, sticky='W', padx=15)
-        Label(top, text=f"{sum(self.logics.hundred_percent):.2f}").grid(row=index + 2, column=4, sticky='W', padx=15)
+        Label(top, text=f"{self.logics.total_base:.2f}").grid(row=index + 2, column=1, sticky='W', padx=15)
+        Label(top, text=f"{self.logics.total_thirty:.2f}").grid(row=index + 2, column=2, sticky='W', padx=15)
+        Label(top, text=f"{self.logics.total_fourty:.2f}").grid(row=index + 2, column=3, sticky='W', padx=15)
+        Label(top, text=f"{self.logics.total_hundred:.2f}").grid(row=index + 2, column=4, sticky='W', padx=15)
         
         Label(top, text=f"Money").grid(row=index + 3, column=0, sticky='W', padx=30)
-        Label(top, text=f"{round(sum(self.logics.base_hours) * self.logics.wage)}").grid(row=index + 3, column=1, sticky='W', padx=15)
-        Label(top, text=f"{round(sum(self.logics.thirty_percent) * self.logics.wage)}").grid(row=index + 3, column=2, sticky='W', padx=15)
-        Label(top, text=f"{round(sum(self.logics.fourty_percent) * self.logics.wage)}").grid(row=index + 3, column=3, sticky='W', padx=15)
-        Label(top, text=f"{round(sum(self.logics.hundred_percent) * self.logics.wage)}").grid(row=index + 3, column=4, sticky='W', padx=15)
+        Label(top, text=f"{round(self.logics.total_base) * self.logics.wage}").grid(row=index + 3, column=1, sticky='W', padx=15)
+        Label(top, text=f"{round(self.logics.total_thirty) * self.logics.wage}").grid(row=index + 3, column=2, sticky='W', padx=15)
+        Label(top, text=f"{round(self.logics.total_fourty) * self.logics.wage}").grid(row=index + 3, column=3, sticky='W', padx=15)
+        Label(top, text=f"{round(self.logics.total_hundred) * self.logics.wage}").grid(row=index + 3, column=4, sticky='W', padx=15)
         
         Label(top, text=f"Brutto salary").grid(row=index + 4, column=0, sticky='W', padx=30)
         Label(top, text=f"{round(self.logics.brutto_money)}").grid(row=index + 4, column=1, sticky='W', padx=15)
         
         Label(top, text=f"Nett salary").grid(row=index + 5, column=0, sticky='W', padx=30)
-        Label(top, text=f"{round(self.logics.brutto_money)}").grid(row=index + 5, column=1, sticky='W', padx=15)
+        Label(top, text=f"{round(self.logics.nett_money)}").grid(row=index + 5, column=1, sticky='W', padx=15)
     
 def main():
     app = SalaryCounter()

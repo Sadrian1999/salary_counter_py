@@ -6,3 +6,6 @@ class Data:
         self.fourty_percent = fourty
         self.hundred_percent = hundred
         self.plus_hours = plus
+    
+    def __str__(self) -> str:
+        return f"{self.day} {self.base_hours:.2f} {self.thirty_percent:.2f} {self.fourty_percent:.2f} {self.hundred_percent:.2f}"
