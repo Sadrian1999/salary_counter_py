@@ -94,13 +94,10 @@ class SalaryCounter(Tk):
             double_money = True
         else:
             double_money = False
-        if self.date.get() in self.logics.workdays:
-            error_msg.grid(column=1, row=6, pady=10)
-        else:
-            error_msg.config(text="")
-            self.logics.counting_hours(self.logics.convert_to_decimal(self.clk_in.get()), self.logics.convert_to_decimal(self.clk_out.get()), double_money,self.date.get())
-    
+        self.logics.counting_hours(self.logics.convert_to_decimal(self.clk_in.get()), self.logics.convert_to_decimal(self.clk_out.get()), double_money,self.date.get())
+        
     def show_data(self):
+        self.logics.counting_money()
         top = Toplevel()
         top.title("Calculations")
         top.geometry("600x400")

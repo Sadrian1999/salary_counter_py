@@ -12,8 +12,6 @@ class Logics:
         self.total_thirty = 0   
         self.total_fourty = 0
         self.total_hundred = 0
-        self.brutto_money = 0
-        self.nett_money = 0
         self.tax = 0
         self.tb = 0
         
@@ -81,6 +79,8 @@ class Logics:
             self.datas.append(data)
     
     def counting_money(self):
+        self.brutto_money = 0
+        self.nett_money = 0
         money_care = 200
         self.brutto_money += self.total_base * self.wage + self.total_thirty * self.wage * 0.3 + self.total_fourty * self.wage * 0.4 + self.total_hundred * self.wage
         self.brutto_money += self.sick * self.wage * 0.7 + self.paid_off * self.wage
@@ -102,4 +102,4 @@ l.paid_off = 0
 l.counting_hours(14, 23, False, "2023.01.01.")
 l.counting_hours(14, 23, False, "2023.01.02.")
 l.counting_money()
-print(l.total_thirty, l.nett_money)
+print(l.brutto_money, l.nett_money)
