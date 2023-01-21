@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from tkcalendar import Calendar
 from logics import Logics
 
@@ -87,14 +88,15 @@ class SalaryCounter(Tk):
         self.logics.paid_off = int(self.paid.get())
         self.logics.sick = int(self.sick.get())
         self.logics.wage = int(self.wage.get())
-        
-        error_msg = Label(self, text="A megadott dátumra már adtál meg műszakot!")
-        
-        if self.date.get() in holdiay_2023:
-            double_money = True
+        date = self.date.get()
+        if date not in self.logics.workdays:
+            if date in holdiay_2023:
+                double_money = True
+            else:
+                double_money = False
         else:
-            double_money = False
-        self.logics.counting_hours(self.logics.convert_to_decimal(self.clk_in.get()), self.logics.convert_to_decimal(self.clk_out.get()), double_money,self.date.get())
+            messagebox.showerror("Hiba", "Erre a napra már megadtal blokkolást!")
+        self.logics.counting_hours(self.logics.convert_to_decimal(self.clk_in.get()), self.logics.convert_to_decimal(self.clk_out.get()), double_money, date)
         
     def show_data(self):
         self.logics.counting_money()

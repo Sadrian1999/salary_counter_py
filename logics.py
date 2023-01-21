@@ -14,6 +14,9 @@ class Logics:
         self.total_hundred = 0
         self.tax = 0
         self.tb = 0
+        self.brutto_money = 0
+        self.nett_money = 0
+        self.money_care = 200
         
     def convert_to_decimal(self, time: str):
         time = time.split(':')
@@ -30,7 +33,6 @@ class Logics:
             if worked_hours > 6 and worked_hours <= 8.75: return 0.75
             
     def counting_hours(self, clk_in: float, clk_out: float, is_double_money: bool, date: str):
-        
         data = Data()
         data.day = date
         self.workdays.append(date)
@@ -79,9 +81,6 @@ class Logics:
             self.datas.append(data)
     
     def counting_money(self):
-        self.brutto_money = 0
-        self.nett_money = 0
-        money_care = 200
         self.brutto_money += self.total_base * self.wage + self.total_thirty * self.wage * 0.3 + self.total_fourty * self.wage * 0.4 + self.total_hundred * self.wage
         self.brutto_money += self.sick * self.wage * 0.7 + self.paid_off * self.wage
       
@@ -92,9 +91,9 @@ class Logics:
         if self.age >= 25:
             self.tax = self.brutto_money * 0.15
         self.tb = self.brutto_money * 0.185
-        self.nett_money = self.brutto_money - self.tax + money_care
+        self.nett_money = self.brutto_money - self.tax + self.money_care
     
-l = Logics()
+"""l = Logics()
 l.age = 23
 l.wage = 1000
 l.sick = 0
@@ -102,4 +101,4 @@ l.paid_off = 0
 l.counting_hours(14, 23, False, "2023.01.01.")
 l.counting_hours(14, 23, False, "2023.01.02.")
 l.counting_money()
-print(l.brutto_money, l.nett_money)
+print(l.brutto_money, l.nett_money)"""
