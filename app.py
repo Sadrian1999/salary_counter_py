@@ -16,6 +16,7 @@ class SalaryCounter(Tk):
         self.clk_in = StringVar()
         self.clk_out = StringVar()
         self.date = StringVar()
+        self.is_student = IntVar()
         self.salary = 0
         self.logics = Logics()
         self.solutions = []
@@ -26,8 +27,8 @@ class SalaryCounter(Tk):
         # labels
         wage_label = Label(self, text="Wage")
         age_label = Label(self, text="Age")
-        sick_label = Label(self, text="Sick")
-        paid_label = Label(self, text="Holiday")
+        self.sick_label = Label(self, text="Sick")
+        self.paid_label = Label(self, text="Holiday")
         clk_in_label = Label(self, text="Clock in")
         clk_out_label = Label(self, text="Clock out")
         
@@ -36,38 +37,51 @@ class SalaryCounter(Tk):
         wage_entry.insert(0, "1565")
         age_entry = Entry(self, width=5, textvariable=self.age)
         age_entry.insert(0, "23")
-        sick_entry = Entry(self, width=5, textvariable=self.sick)
-        sick_entry.insert(0, "0")
-        paid_entry = Entry(self, width=5, textvariable=self.paid)
-        paid_entry.insert(0, "0")
+        self.sick_entry = Entry(self, width=5, textvariable=self.sick)
+        self.sick_entry.insert(0, "0")
+        self.paid_entry = Entry(self, width=5, textvariable=self.paid)
+        self.paid_entry.insert(0, "0")
         clk_in_entry = Entry(self, width=5, textvariable=self.clk_in)
         clk_in_entry.insert(0, "6:00")
         clk_out_entry = Entry(self, width=5, textvariable=self.clk_out)
         clk_out_entry.insert(0, "14:20")
         self.calendar = Calendar(self, selectmode="day", firstweekday="monday", showweeknumbers=False, locale="hu_HU", foreground="red", selectforeground="white")
+        student = Checkbutton(self, text="Diák vagyok", variable=self.is_student, command=self.student_def)
         
         #put on screen
         wage_label.grid(column=0, row=0, padx=20)
         age_label.grid(column=1, row=0, padx=20)
-        sick_label.grid(column=2, row=0, padx=20)
-        paid_label.grid(column=3, row=0, padx=20)
+        self.sick_label.grid(column=2, row=0, padx=20)
+        self.paid_label.grid(column=3, row=0, padx=20)
              
         wage_entry.grid(column=0, row=1, padx=20)
         age_entry.grid(column=1, row=1, padx=20)
-        sick_entry.grid(column=2, row=1, padx=20)
-        paid_entry.grid(column=3, row=1, padx=20)
+
         
         clk_in_label.grid(column=0, row=2, padx=20)
-        clk_out_label.grid(column=1, row=2, padx=20)     
+        clk_out_label.grid(column=1, row=2, padx=20)    
         
         clk_in_entry.grid(column=0, row=3, padx=20)
         clk_out_entry.grid(column=1, row=3, padx=20)
+        student.grid(column=2, row=3, padx=20, columnspan=2)
         
         self.calendar.grid(column=0, row=4, columnspan=4, pady=20)
     
         Button(self,text="Add", command=self.add).grid(column=1, row=5, pady=10)
         Button(self,text="Count", command=self.show_data).grid(column=2, row=5, pady=10)  
 
+    def student_def(self):
+        if not self.is_student:
+            self.sick_entry.grid()
+            self.paid_entry.grid()
+            self.sick_label.grid()
+            self.paid_label.grid()
+        if self.is_student:
+            self.sick_label.grid_forget()
+            self.paid_label.grid_forget()
+            self.sick_entry.grid_forget()
+            self.paid_entry.grid_forget()
+            
     def add(self):   
         self.date.set(self.calendar.get_date()) 
         self.calendar.config(selectforeground="green")
@@ -105,6 +119,10 @@ class SalaryCounter(Tk):
             messagebox.showerror("Hiba", "Dátumformátum nem megfelelő!")
             return False
         
+        if ':' not in c_out or int(c_out[0:c_out.index(':', 0, c_out_len - 1)]) > 24 or int(c_out[c_out.index(':', 0, c_out_len - 1) + 1:]) > 60:
+            messagebox.showerror("Hiba", "Dátumformátum nem megfelelő!")
+            return False
+        
         # day duplication and double money by day check
         if date not in self.logics.workdays:
             if date in holdiay_2023:
@@ -115,15 +133,13 @@ class SalaryCounter(Tk):
         else:
             messagebox.showerror("Hiba", "Erre a napra már megadtal blokkolást!")
             return False
-                
-            
+                         
     def show_data(self):
         self.logics.counting_money()
         top = Toplevel()
         top.title("Calculations")
         top.geometry("600x400")
         row_index = 0
-        
         Label(top, text=f"Date").grid(row=0, column=0, sticky='W', padx=30)
         Label(top, text=f"Base").grid(row=0, column=1, sticky='W', padx=15)
         Label(top, text=f"30%").grid(row=0, column=2, sticky='W', padx=15)
