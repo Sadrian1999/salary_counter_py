@@ -17,13 +17,21 @@ class Logics:
         self.brutto_money = 0
         self.nett_money = 0
         self.money_care = 200
+        self.is_vem: bool
         
     def convert_to_decimal(self, time: str):
         time = time.split(':')
         return float(int(time[0]) + int(time[1]) / 60)
     
     def break_time(self, worked_hours: float):
-        if self.age > 18:
+        if self.is_vem:
+            if worked_hours > 9 + 1/ 3:
+                return 1
+            elif worked_hours <= 6:
+                return 0
+            else:
+                return 0.5
+        elif self.age > 18:
             if worked_hours <= 6: return 0
             if worked_hours > 6 and worked_hours <= 9 + 1 / 3: return 1 / 3
             if worked_hours > 9 + 1 / 3 and worked_hours <= 12.75: return 0.75
@@ -61,11 +69,11 @@ class Logics:
                 data.thirty_percent += (clk_out - 18) * double_money
             
             elif clk_in > 18 and clk_out <= 24 and clk_out > 22:
-                data.fourty_percent += (6 - clk_in) * double_money
-                data.thirty_percent += (clk_out - 18) * double_money
+                data.fourty_percent += (24 - clk_out) * double_money
+                data.thirty_percent += (4 - (clk_in - 18)) * double_money
             
             elif clk_in > 0 and clk_in <= 6 and clk_out < 22 and clk_out >= 18:
-                data.fourty_percent += (6 - clk_in) * double_money
+                data.fourty_percent += (24 - clk_out) * double_money
                 data.thirty_percent += (clk_out - 18) * double_money
             
             elif clk_in > 6 and clk_in <= 18 and clk_out <= 24 and clk_out > 22:

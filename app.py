@@ -16,9 +16,10 @@ class SalaryCounter(Tk):
         self.clk_in = StringVar()
         self.clk_out = StringVar()
         self.date = StringVar()
-        self.is_student = IntVar()
+        self.is_student = BooleanVar()
         self.salary = 0
         self.logics = Logics()
+        self.logics.is_vem = BooleanVar()
         self.solutions = []
         self.double_money = False
         self.create_widgets()
@@ -47,23 +48,27 @@ class SalaryCounter(Tk):
         clk_out_entry.insert(0, "14:20")
         self.calendar = Calendar(self, selectmode="day", firstweekday="monday", showweeknumbers=False, locale="hu_HU", foreground="red", selectforeground="white")
         student = Checkbutton(self, text="Diák vagyok", variable=self.is_student, command=self.student_def)
+        vem = Checkbutton(self, text="VÉM vagyok", variable=self.logics.is_vem)
         
         #put on screen
         wage_label.grid(column=0, row=0, padx=20)
         age_label.grid(column=1, row=0, padx=20)
-        self.sick_label.grid(column=2, row=0, padx=20)
-        self.paid_label.grid(column=3, row=0, padx=20)
+        self.sick_label.grid(column=2, row=0)
+        self.paid_label.grid(column=3, row=0)
              
         wage_entry.grid(column=0, row=1, padx=20)
         age_entry.grid(column=1, row=1, padx=20)
 
+        self.sick_entry.grid(column=2, row=1)
+        self.paid_entry.grid(column=3, row=1)
         
         clk_in_label.grid(column=0, row=2, padx=20)
         clk_out_label.grid(column=1, row=2, padx=20)    
         
         clk_in_entry.grid(column=0, row=3, padx=20)
         clk_out_entry.grid(column=1, row=3, padx=20)
-        student.grid(column=2, row=3, padx=20, columnspan=2)
+        student.grid(column=2, row=3)
+        vem.grid(column=3, row=3)
         
         self.calendar.grid(column=0, row=4, columnspan=4, pady=20)
     
