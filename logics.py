@@ -17,7 +17,7 @@ class Logics:
         self.brutto_money = 0
         self.nett_money = 0
         self.money_care = 200
-        self.is_vem: bool
+        self.is_vem = False
         
     def convert_to_decimal(self, time: str):
         time = time.split(':')
@@ -46,11 +46,12 @@ class Logics:
         self.workdays.append(date)
         
         if clk_in < clk_out:
+            
             hours = clk_out - clk_in
-            if hours > 12.75 or hours < 4:
-                raise ValueError()
             double_money = 1
             
+            if hours > 12.75 or hours < 4:
+                raise ValueError()
             if is_double_money:
                 double_money = 2
                 data.hundred_percent += hours - self.break_time(hours)
@@ -109,7 +110,7 @@ l.age = 23
 l.wage = 1000
 l.sick = 0
 l.paid_off = 0
-l.counting_hours(14, 23, False, "2023.01.01.")
-l.counting_hours(14, 23, False, "2023.01.02.")
+l.is_vem = False
+l.counting_hours(14, 22 + 1 / 3, False, "2023.01.01.")
 l.counting_money()
-print(l.brutto_money, l.nett_money)"""
+print(l.datas[0], l.nett_money, l.total_base * l.wage, sep="\n")"""

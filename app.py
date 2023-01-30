@@ -17,9 +17,9 @@ class SalaryCounter(Tk):
         self.clk_out = StringVar()
         self.date = StringVar()
         self.is_student = BooleanVar()
+        self.is_vem = BooleanVar()
         self.salary = 0
         self.logics = Logics()
-        self.logics.is_vem = BooleanVar()
         self.solutions = []
         self.double_money = False
         self.create_widgets()
@@ -48,7 +48,7 @@ class SalaryCounter(Tk):
         clk_out_entry.insert(0, "14:20")
         self.calendar = Calendar(self, selectmode="day", firstweekday="monday", showweeknumbers=False, locale="hu_HU", foreground="red", selectforeground="white")
         student = Checkbutton(self, text="Diák vagyok", variable=self.is_student, command=self.student_def)
-        vem = Checkbutton(self, text="VÉM vagyok", variable=self.logics.is_vem)
+        vem = Checkbutton(self, text="VÉM vagyok", variable=self.is_vem)
         
         #put on screen
         wage_label.grid(column=0, row=0, padx=20)
@@ -74,6 +74,7 @@ class SalaryCounter(Tk):
     
         Button(self,text="Add", command=self.add).grid(column=1, row=5, pady=10)
         Button(self,text="Count", command=self.show_data).grid(column=2, row=5, pady=10)  
+        self.logics.is_vem = self.is_vem.get()
 
     def student_def(self):
         if not self.is_student:
@@ -169,9 +170,9 @@ class SalaryCounter(Tk):
         
         Label(top, text=f"Money").grid(row=row_index + 3, column=0, sticky='W', padx=30)
         Label(top, text=f"{round(self.logics.total_base) * self.logics.wage}").grid(row=row_index + 3, column=1, sticky='W', padx=15)
-        Label(top, text=f"{round(self.logics.total_thirty) * self.logics.wage}").grid(row=row_index + 3, column=2, sticky='W', padx=15)
-        Label(top, text=f"{round(self.logics.total_fourty) * self.logics.wage}").grid(row=row_index + 3, column=3, sticky='W', padx=15)
-        Label(top, text=f"{round(self.logics.total_hundred) * self.logics.wage}").grid(row=row_index + 3, column=4, sticky='W', padx=15)
+        Label(top, text=f"{round(self.logics.total_thirty) * self.logics.wage * 0.3}").grid(row=row_index + 3, column=2, sticky='W', padx=15)
+        Label(top, text=f"{round(self.logics.total_fourty) * self.logics.wage * 0.4}").grid(row=row_index + 3, column=3, sticky='W', padx=15)
+        Label(top, text=f"{round(self.logics.total_hundred) * self.logics.wage * 2}").grid(row=row_index + 3, column=4, sticky='W', padx=15)
         
         Label(top, text=f"Brutto salary").grid(row=row_index + 4, column=0, sticky='W', padx=30)
         Label(top, text=f"{round(self.logics.brutto_money)}").grid(row=row_index + 4, column=1, sticky='W', padx=15)
