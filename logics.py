@@ -47,6 +47,8 @@ class Logics:
         
         if clk_in < clk_out:
             hours = clk_out - clk_in
+            if hours > 12.75:
+                raise ValueError()
             double_money = 1
             
             if is_double_money:
