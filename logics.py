@@ -56,6 +56,7 @@ class Logics:
                 data.hundred_percent += hours - self.break_time(hours)
             if not is_double_money:
                 data.base_hours += hours - self.break_time(hours)
+                
             if clk_in > 0 and clk_out <= 6:
                 data.fourty_percent += hours * double_money
     
