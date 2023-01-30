@@ -97,8 +97,11 @@ class SalaryCounter(Tk):
         date = self.date.get()
         
         if self.error_handling(date):
-            self.logics.counting_hours(self.logics.convert_to_decimal(self.clk_in.get()), self.logics.convert_to_decimal(self.clk_out.get()), self.double_money, date)
-    
+            try:
+                self.logics.counting_hours(self.logics.convert_to_decimal(self.clk_in.get()), self.logics.convert_to_decimal(self.clk_out.get()), self.double_money, date)
+            except ValueError:
+                messagebox.showerror("Hiba", "Hibás munkaidő intervallum!")
+                
     def error_handling(self, date):
         holdiay_2023 = [
             "2023. 01. 01.",
