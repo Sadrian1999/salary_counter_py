@@ -17,7 +17,7 @@ class Logics:
         self.brutto_money = 0
         self.nett_money = 0
         self.money_care = 200
-        self.is_vem = False
+        self.is_vem: bool
         
     def convert_to_decimal(self, time: str):
         time = time.split(':')
@@ -31,7 +31,7 @@ class Logics:
                 return 0
             else:
                 return 0.5
-        elif self.age > 18:
+        elif self.age >= 18:
             if worked_hours <= 6: return 0
             if worked_hours > 6 and worked_hours <= 9 + 1 / 3: return 1 / 3
             if worked_hours > 9 + 1 / 3 and worked_hours <= 12.75: return 0.75
