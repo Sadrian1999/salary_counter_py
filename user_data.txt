@@ -1,0 +1,6 @@
+1234
+16
+Éttermi dolgozó
+Állandós
+8 órás
+False
