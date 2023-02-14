@@ -44,30 +44,21 @@ class Logics:
         data = Data()
         data.day = date
         self.workdays.append(date)
+        double_money = 1
         
         if clk_in < clk_out:
-            
             hours = clk_out - clk_in
-            double_money = 1
-            
-            if hours > 12.75 or hours < 4:
-                raise ValueError()
+
             if is_double_money:
                 double_money = 2
                 data.hundred_percent += hours - self.break_time(hours)
             if not is_double_money:
                 data.base_hours += hours - self.break_time(hours)
                 
-            if clk_in > 0 and clk_out <= 6:
-                data.fourty_percent += hours * double_money
-    
-            elif clk_in > 22 and clk_out <= 24:
-                data.fourty_percent += hours * double_money
+            if hours > 12.75 or hours < 4:
+                raise ValueError()
                 
-            elif clk_in > 18 and clk_out <= 22:
-                data.thirty_percent += hours * double_money
-                
-            elif clk_in > 0 and clk_in < 6 and clk_out <= 18 and clk_out > 6:
+            if clk_in > 0 and clk_in < 6 and clk_out <= 18 and clk_out > 6:
                 data.fourty_percent += (6 - clk_in) * double_money
                 
             elif clk_in > 6 and clk_out <= 22 and clk_out > 18:
@@ -75,7 +66,7 @@ class Logics:
             
             elif clk_in > 18 and clk_out <= 24 and clk_out > 22:
                 data.fourty_percent += (24 - clk_out) * double_money
-                data.thirty_percent += (4 - (clk_in - 18)) * double_money
+                data.thirty_percent += (22 - clk_in - self.break_time(hours)) * double_money
             
             elif clk_in > 0 and clk_in <= 6 and clk_out < 22 and clk_out >= 18:
                 data.fourty_percent += (24 - clk_out) * double_money
@@ -84,13 +75,39 @@ class Logics:
             elif clk_in > 6 and clk_in <= 18 and clk_out <= 24 and clk_out > 22:
                 data.fourty_percent += (clk_out - 22) * double_money
                 data.thirty_percent += 4 * double_money
-                    
-            self.total_base += data.base_hours 
-            self.total_thirty += data.thirty_percent
-            self.total_fourty += data.fourty_percent
-            self.total_hundred += data.hundred_percent
+        
+        if clk_in > clk_out:
+            hours = 24 - clk_in + clk_out
             
-            self.datas.append(data)
+            if is_double_money:
+                double_money = 2
+                data.hundred_percent += hours - self.break_time(hours)
+            
+            if not is_double_money:
+                data.base_hours += hours - self.break_time(hours)
+                
+            if hours > 12.75 or hours < 4:
+                raise ValueError()
+            
+            if clk_in >= 22 and clk_out <= 6:
+                data.fourty_percent += (hours - self.break_time(hours)) * double_money
+            
+            elif clk_in >= 18 and clk_out <= 6:
+                data.fourty_percent += (2 + clk_out) * double_money
+                data.thirty_percent += (22 - clk_in - self.break_time(hours)) * double_money
+                
+            elif clk_in >= 12 and clk_out >= 0:
+                data.thirty_percent += 4 * double_money
+                temp_clk_out = clk_out + 24
+                data.fourty_percent += (temp_clk_out - 22) * double_money
+                
+            
+        self.total_base += data.base_hours 
+        self.total_thirty += data.thirty_percent
+        self.total_fourty += data.fourty_percent
+        self.total_hundred += data.hundred_percent
+            
+        self.datas.append(data)
     
     def counting_money(self):
         self.brutto_money += self.total_base * self.wage + self.total_thirty * self.wage * 0.3 + self.total_fourty * self.wage * 0.4 + self.total_hundred * self.wage
@@ -105,12 +122,12 @@ class Logics:
         self.tb = self.brutto_money * 0.185
         self.nett_money = self.brutto_money - self.tax + self.money_care
     
-"""l = Logics()
+l = Logics()
 l.age = 23
 l.wage = 1000
 l.sick = 0
 l.paid_off = 0
 l.is_vem = False
-l.counting_hours(14, 22 + 1 / 3, False, "2023.01.01.")
+l.counting_hours(18, 6, False, "2023.01.01.")
 l.counting_money()
-print(l.datas[0], l.nett_money, l.total_base * l.wage, sep="\n")"""
+print(l.datas[0], l.nett_money, l.total_base * l.wage, sep="\n")

@@ -42,6 +42,7 @@ class SalaryCounter(tk.Tk):
         self.logics.is_vem = True if lines[2].rstrip("\n") == "VÉM" else False
         
         print(self.logics.is_vem)
+        
 def main():
     app = SalaryCounter()
     app.mainloop()

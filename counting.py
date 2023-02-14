@@ -22,7 +22,6 @@ class Counting(ttk.Frame):
         self.double_money_day_label = ttk.Label(self, text="Dupla béres nap?\n(Nem ünnepnap!)")
         choosen_day = ttk.Label(self, text="")
         
-        
         self.double_money_day_check = ttk.Checkbutton(self,text="Dupla béres nap?\n(Nem ünnepnap!)", textvariable=self.double_money_day)
         self.sick_entry = ttk.Entry(self, width=5, textvariable=self.sick)
         self.sick_entry.insert(0, "0")
@@ -33,8 +32,7 @@ class Counting(ttk.Frame):
         clk_out_entry = ttk.Entry(self, width=5, textvariable=self.clk_out)
         clk_out_entry.insert(0, "14:20")
         self.calendar = Calendar(self, selectmode="day", firstweekday="monday", showweeknumbers=False, locale="hu_HU", foreground="red", selectforeground="white")
-        
-
+    
         self.sick_label.grid(column=0, row=0)
         self.paid_label.grid(column=1, row=0)
         self.double_money_day_label.grid(column=2, row=0)
@@ -68,6 +66,7 @@ class Counting(ttk.Frame):
         if self.error_handling(date):
             try:
                 self.controller.logics.counting_hours(self.controller.logics.convert_to_decimal(self.clk_in.get()), self.controller.logics.convert_to_decimal(self.clk_out.get()), self.double_money, date)
+                
             except ValueError:
                 messagebox.showerror("Hiba", "Hibás munkaidő intervallum!")
                 
