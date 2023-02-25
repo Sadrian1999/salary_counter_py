@@ -72,36 +72,7 @@ class Settings(ttk.Frame):
         from start_page import StartPage
         back = Button(self, text="Vissza", command=lambda: self.controller.show_frame(StartPage))
         back.grid(column=1, row=7)
-
+        
     def write_data(self):
-        w = self.wage.get()
-        ag = self.age.get()
-        p = self.position.get()
-        ap = self.aplication_type.get()
-        t = self.tax_free.get()
-        j = self.job_time.get()
-        
-        if ap == "Diák":
-            j = '-'
-        try:
-            int(w)
-        except Exception:
-            return messagebox.showerror("Hiba", "Hibás órabér")
-        
-        try:
-            int(ag)
-        except Exception:
-            return messagebox.showerror("Hiba", "Hibás életkor")
-        
-        if int(w) > 10000 or int(w) < 1000:
-            return messagebox.showerror("Hiba", "Hibás órabér")
-        
-        if int(ag) > 99 or int(ag) < 15:
-            return messagebox.showerror("Hiba", "Hibás életkor")
-        
-        with open("user_data.txt", "wt") as file:
-            for element in (w, ag, p, ap, j, t):
-                file.write(str(element) + "\n")
-        return messagebox.showinfo("Siker", "Adatok sikeresen mentve")
-
-        
+        self.controller.engine.post("save_settings", self.wage.get(), self.age.get(), self.position.get(), self.aplication_type.get(), self.job_time.get(), self.tax_free.get())
+        self.controller.engine.save_settings()

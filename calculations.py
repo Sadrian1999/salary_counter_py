@@ -15,7 +15,7 @@ class Calculations(ttk.Frame):
 		tk.Label(self, text=f"40%").grid(row=0, column=3, sticky='W', padx=15)
 		tk.Label(self, text=f"100%").grid(row=0, column=4, sticky='W', padx=15)
 
-		for row_index,data in enumerate(self.controller.logics.datas):
+		for row_index, data in enumerate(self.controller.logics.datas):
 			tk.Label(self, text=f"{data.day}").grid(row=row_index + 1, column=0, sticky='W', padx=30)
 			tk.Label(self, text=f"{data.base_hours:.2f}").grid(row=row_index + 1, column=1, sticky='W', padx=15)
 			tk.Label(self, text=f"{data.thirty_percent:.2f}").grid(row=row_index + 1, column=2, sticky='W', padx=15)

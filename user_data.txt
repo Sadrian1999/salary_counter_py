@@ -1,6 +1,6 @@
-1234
-16
-Éttermi dolgozó
+2260
+23
+Koordinátor
 Állandós
-8 órás
+6 órás
 False

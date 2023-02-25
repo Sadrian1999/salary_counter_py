@@ -133,7 +133,7 @@ class Salary_Counter(Tk):
             return False
         
         # day duplication and double money by day check
-        if date not in self.logics.workdays:
+        if date not in self.logics.datas.date:
             if date in holdiay_2023:
                 self.double_money = True
             else:

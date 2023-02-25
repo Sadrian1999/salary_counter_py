@@ -1,27 +1,9 @@
-from data import Data
+from assets import Hours, Blocking
 
 class Logics:
-    def __init__(self) -> None:
-        self.age: int
-        self.wage: int
-        self.paid_off: int
-        self.sick: int
-        self.datas = []
-        self.workdays = []
-        self.total_base = 0
-        self.total_thirty = 0   
-        self.total_fourty = 0
-        self.total_hundred = 0
-        self.tax = 0
-        self.tb = 0
-        self.brutto_money = 0
-        self.nett_money = 0
-        self.money_care = 200
-        self.is_vem: bool
-        
-    def convert_to_decimal(self, time: str):
-        time = time.split(':')
-        return float(int(time[0]) + int(time[1]) / 60)
+    def __init__(self, age=0, is_vem=False) -> None:
+        self.age = age
+        self.is_vem = is_vem
     
     def break_time(self, worked_hours: float):
         if self.is_vem:
@@ -40,94 +22,76 @@ class Logics:
             if worked_hours > 4.5 and worked_hours <= 6: return 0.5
             if worked_hours > 6 and worked_hours <= 8.75: return 0.75
             
-    def counting_hours(self, clk_in: float, clk_out: float, is_double_money: bool, date: str):
-        data = Data()
-        data.day = date
-        self.workdays.append(date)
+    def counting_hours(self, blocking: Blocking, is_double_money: bool) -> Hours:
+        
+        total_hours = Hours()
+        hundred_percent = 0
+        thirty_percent = 0
+        fourty_percent = 0
+        base_hours = 0
         double_money = 1
+        clk_in = blocking.clk_in
+        clk_out = blocking.clk_out
         
         if clk_in < clk_out:
             hours = clk_out - clk_in
 
             if is_double_money:
                 double_money = 2
-                data.hundred_percent += hours - self.break_time(hours)
+                hundred_percent += hours - self.break_time(hours)
+                
             if not is_double_money:
-                data.base_hours += hours - self.break_time(hours)
+                base_hours += hours - self.break_time(hours)
                 
             if hours > 12.75 or hours < 4:
                 raise ValueError()
                 
             if clk_in > 0 and clk_in < 6 and clk_out <= 18 and clk_out > 6:
-                data.fourty_percent += (6 - clk_in) * double_money
+                fourty_percent += (6 - clk_in) * double_money
                 
             elif clk_in > 6 and clk_out <= 22 and clk_out > 18:
-                data.thirty_percent += (clk_out - 18) * double_money
+                thirty_percent += (clk_out - 18) * double_money
             
             elif clk_in > 18 and clk_out <= 24 and clk_out > 22:
-                data.fourty_percent += (24 - clk_out) * double_money
-                data.thirty_percent += (22 - clk_in - self.break_time(hours)) * double_money
+                fourty_percent += (24 - clk_out) * double_money
+                thirty_percent += (22 - clk_in - self.break_time(hours)) * double_money
             
             elif clk_in > 0 and clk_in <= 6 and clk_out < 22 and clk_out >= 18:
-                data.fourty_percent += (24 - clk_out) * double_money
-                data.thirty_percent += (clk_out - 18) * double_money
+                fourty_percent += (24 - clk_out) * double_money
+                thirty_percent += (clk_out - 18) * double_money
             
             elif clk_in > 6 and clk_in <= 18 and clk_out <= 24 and clk_out > 22:
-                data.fourty_percent += (clk_out - 22) * double_money
-                data.thirty_percent += 4 * double_money
+                fourty_percent += (clk_out - 22) * double_money
+                thirty_percent += 4 * double_money
         
         if clk_in > clk_out:
             hours = 24 - clk_in + clk_out
             
             if is_double_money:
                 double_money = 2
-                data.hundred_percent += hours - self.break_time(hours)
+                hundred_percent += hours - self.break_time(hours)
             
             if not is_double_money:
-                data.base_hours += hours - self.break_time(hours)
+                base_hours += hours - self.break_time(hours)
                 
             if hours > 12.75 or hours < 4:
                 raise ValueError()
             
             if clk_in >= 22 and clk_out <= 6:
-                data.fourty_percent += (hours - self.break_time(hours)) * double_money
+                fourty_percent += (hours - self.break_time(hours)) * double_money
             
             elif clk_in >= 18 and clk_out <= 6:
-                data.fourty_percent += (2 + clk_out) * double_money
-                data.thirty_percent += (22 - clk_in - self.break_time(hours)) * double_money
+                fourty_percent += (2 + clk_out) * double_money
+                thirty_percent += (22 - clk_in - self.break_time(hours)) * double_money
                 
             elif clk_in >= 12 and clk_out >= 0:
-                data.thirty_percent += 4 * double_money
+                thirty_percent += 4 * double_money
                 temp_clk_out = clk_out + 24
-                data.fourty_percent += (temp_clk_out - 22) * double_money
-                
+                fourty_percent += (temp_clk_out - 22) * double_money
             
-        self.total_base += data.base_hours 
-        self.total_thirty += data.thirty_percent
-        self.total_fourty += data.fourty_percent
-        self.total_hundred += data.hundred_percent
-            
-        self.datas.append(data)
-    
-    def counting_money(self):
-        self.brutto_money += self.total_base * self.wage + self.total_thirty * self.wage * 0.3 + self.total_fourty * self.wage * 0.4 + self.total_hundred * self.wage
-        self.brutto_money += self.sick * self.wage * 0.7 + self.paid_off * self.wage
-      
-        if self.age < 25:
-            if self.brutto_money > 433_000:
-                self.tax = (self.brutto_money - 433_000) * 0.15
+        total_hours.base_hours = base_hours
+        total_hours.fourty_percent = fourty_percent
+        total_hours.thirty_percent = thirty_percent
+        total_hours.hundred_percent = hundred_percent
         
-        if self.age >= 25:
-            self.tax = self.brutto_money * 0.15
-        self.tb = self.brutto_money * 0.185
-        self.nett_money = self.brutto_money - self.tax + self.money_care
-    
-l = Logics()
-l.age = 23
-l.wage = 1000
-l.sick = 0
-l.paid_off = 0
-l.is_vem = False
-l.counting_hours(18, 6, False, "2023.01.01.")
-l.counting_money()
-print(l.datas[0], l.nett_money, l.total_base * l.wage, sep="\n")
+        return total_hours  
